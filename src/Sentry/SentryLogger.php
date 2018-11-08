@@ -3,6 +3,7 @@
 namespace Contributte\Logging\Sentry;
 
 use Contributte\Logging\ILogger;
+use Eshop\Core\Exception\EshopException;
 use Exception;
 use Nette\Application\BadRequestException;
 use Raven_Client;
@@ -36,7 +37,9 @@ final class SentryLogger implements ILogger
 			return;
 		if ($message instanceof \Eshop\Core\Exception\BadRequestException)
 			return;
-		
+		if ($message instanceof EshopException)
+			return;
+
 		// Send to Sentry
 		$this->makeRequest($message);
 	}
