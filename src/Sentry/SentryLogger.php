@@ -27,7 +27,7 @@ final class SentryLogger implements ILogger
 	 * @param string $priority
 	 * @return void
 	 */
-	public function log($message, $priority)
+	public function log($message, $priority):void
 	{
 		if (!in_array($priority, [ILogger::ERROR, ILogger::EXCEPTION, ILogger::CRITICAL], true))
 			return;
