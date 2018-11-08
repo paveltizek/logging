@@ -1,20 +1,20 @@
-<?php declare(strict_types = 1);
+<?php
 
 namespace Contributte\Logging\Sentry;
 
 use Contributte\Logging\ILogger;
 use Exception;
+use Nette\Application\BadRequestException;
 use Raven_Client;
-use Throwable;
 
 final class SentryLogger implements ILogger
 {
 
-	/** @var mixed[] */
+	/** @var array */
 	private $config;
 
 	/**
-	 * @param mixed[] $config
+	 * @param array $config
 	 */
 	public function __construct(array $config)
 	{
@@ -24,17 +24,28 @@ final class SentryLogger implements ILogger
 	/**
 	 * @param string|Exception $message
 	 * @param string $priority
+	 * @return void
 	 */
-	public function log($message, $priority): void
+	public function log($message, $priority)
 	{
-		if (!in_array($priority, [ILogger::ERROR, ILogger::EXCEPTION, ILogger::CRITICAL], true)) return;
-		if (!($message instanceof Throwable)) return;
-
+		if (!in_array($priority, [ILogger::ERROR, ILogger::EXCEPTION, ILogger::CRITICAL], true))
+			return;
+		if (!($message instanceof Exception))
+			return;
+		if ($message instanceof BadRequestException)
+			return;
+		if ($message instanceof \Eshop\Core\Exception\BadRequestException)
+			return;
+		
 		// Send to Sentry
 		$this->makeRequest($message);
 	}
 
-	protected function makeRequest(Throwable $message): void
+	/**
+	 * @param Exception $message
+	 * @return void
+	 */
+	protected function makeRequest(Exception $message)
 	{
 		$client = new Raven_Client($this->config['url']);
 		$client->captureException($message);
