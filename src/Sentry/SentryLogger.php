@@ -33,12 +33,12 @@ final class SentryLogger implements ILogger
 			return;
 		if (!($message instanceof Exception))
 			return;
-		if ($message instanceof BadRequestException)
-			return;
-		if ($message instanceof \Eshop\Core\Exception\BadRequestException)
-			return;
-		if ($message instanceof EshopException)
-			return;
+//		if ($message instanceof BadRequestException)
+//			return;
+//		if ($message instanceof \Eshop\Core\Exception\BadRequestException)
+//			return;
+//		if ($message instanceof EshopException)
+//			return;
 
 		// Send to Sentry
 		$this->makeRequest($message);
